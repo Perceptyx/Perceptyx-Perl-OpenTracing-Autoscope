@@ -1,2 +1,4 @@
-requires            => 'Scope::Context';
 requires            => 'OpenTracing::GlobalTracer';
+
+requires            => 'Carp';
+requires            => 'Scope::Context';
