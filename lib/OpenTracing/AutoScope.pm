@@ -1,5 +1,8 @@
 package OpenTracing::AutoScope;
 
+use strict;
+use warnings;
+
 =head1 NAME
 
 OpenTracing::AutoScope - Automagically create and close scoped spans.
@@ -23,6 +26,7 @@ OpenTracing::AutoScope - Automagically create and close scoped spans.
 
 use OpenTracing::GlobalTracer qw/$TRACER/;
 
+use Carp;
 use Scope::Context;
 
 
@@ -83,54 +87,17 @@ C<< $TRACER->start_active_span >>.
 =cut
 
 sub start_guarded_span {
-    my $class = shift;
+    my $class          = shift;
+    my $operation_name = scalar @_ % 2 ? shift : _context_sub_name( );
+    my %options        = @_;
     
-    my ( $operation_name, $options ) = _get_operation_name_and_options( @_ )
+    my $scope = $TRACER->start_active_span( $operation_name, %options );
     
-    my $scope = $TRACER->start_active_span( $operation_name, $options );
-    
-    Scope::Context->up->reap( sub { $scope->close } )
+    Scope::Context->up->reap( sub { $scope->close } );
     
     return
 }
 
-
-
-# _get_operation_name_and_options
-#
-# Returns a value for the operation_name and a hashref for the options.
-#
-# if no operation_name is given, it will try tu use subname from the context.
-#
-sub _get_operation_name_and_options {
-    my $operation_name;
-    my $options;
-    
-    if ( scalar @_ == 2 ) {
-        # recieved 2 params, assuming they are correct
-        $operation_name = shift;
-        $options        = shift;
-        
-    } elsif ( scalar @_ == 1 and !is_ref $_[0] ) {
-        # recieved 1 param, non ref, $operation_name
-        $operation_name = shift;
-        
-    } elsif ( scalar @_ == 1 and is_hashref $_[0] ) {
-        # recivec 1 param, a hashref, must be the options then
-        $options        = shift;
-        
-    } elsif ( scalar @_ ) {
-        # recieved 0 params would have been okay and would used defaults ... BUT
-        carp "OpenTracing::AutoScope expected \$operation_name => \\%options";
-        
-    }
-    
-    $operation_name //= _context_sub_name;
-    $options        //= {};
-    
-    return $operation_name, $options
-    
-}
 
 
 # _context_sub_name
