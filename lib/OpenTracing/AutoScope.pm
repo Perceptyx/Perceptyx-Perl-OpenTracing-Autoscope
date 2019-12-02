@@ -5,7 +5,6 @@ use warnings;
 
 use OpenTracing::GlobalTracer;
 
-use Carp;
 use Scope::Context;
 
 
