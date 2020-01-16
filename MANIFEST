@@ -1,3 +1,4 @@
+CHANGES
 cpanfile
 lib/OpenTracing/AutoScope.pm
 lib/OpenTracing/AutoScope.pod
