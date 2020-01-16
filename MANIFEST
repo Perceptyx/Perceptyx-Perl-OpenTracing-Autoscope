@@ -3,6 +3,7 @@ lib/OpenTracing/AutoScope.pm
 lib/OpenTracing/AutoScope.pod
 t/00_use_ok.t
 t/01_can_methods.t
+LICENSE.md
 Makefile.PL
 MANIFEST
 README.md
