@@ -9,5 +9,5 @@ on 'develop' => sub {
 
 on 'test' => sub {
     requires            "Test::Most";
-    requires            "Test::OpenTracing::Integration", 'v0.100.1';
+    requires            "Test::OpenTracing::Integration", 'v0.101.2';
 };
