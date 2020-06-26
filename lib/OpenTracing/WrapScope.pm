@@ -1,4 +1,5 @@
 package OpenTracing::WrapScope;
+our $VERSION = '0.100.0';
 use strict;
 use warnings;
 use B::Hooks::EndOfScope;
