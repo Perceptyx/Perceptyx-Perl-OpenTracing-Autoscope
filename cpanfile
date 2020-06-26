@@ -1,4 +1,5 @@
 requires            'OpenTracing::GlobalTracer';
+requires            'OpenTracing::Implementation::NoOp';
 
 requires            'Scope::Context';
 
