@@ -16,7 +16,14 @@ OpenTracing::WrapScope - Automatically add spans to selected subroutines
         sub bar { ... }
     }
 
-Roughly equivalent to:
+or:
+
+    use OpenTracing::WrapScope;
+
+    OpenTracing::WrapScope::install_wrapped('foo');
+    OpenTracing::WrapScope::install_wrapped('Foo::Bar');
+
+which is roughly equivalent to:
 
     use OpenTracing::AutoScope;
     
@@ -43,6 +50,25 @@ Additionally, if a wrapped subroutine dies, an additional C<error> tag will
 be added to the span.
 
 
+=head1 FUNCTIONS
+
+=head2 install_wrapped($sub)
+
+Replaces the specified subroutine with a span-handling version.
+$sub needs to be a fully qualified subroutine name or an unqualified name
+from the current package. The subroutine needs to be defined or a warning
+will be thrown. This warning can be made fatal with:
+
+  use warnings FATAL => 'OpenTracing::WrapScope';
+
+or disabled with:
+
+  no warnings 'OpenTracing::WrapScope';
+
+=head2 wrapped($code_ref)
+
+Returns a version of the given code reference with span handling attached.
+Useful for adding spans to anonymous subroutines.
 
 =head1 CAVEATS
 
