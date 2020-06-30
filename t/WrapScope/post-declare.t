@@ -13,6 +13,6 @@ pre();
 post();
 
 global_tracer_cmp_easy(
-    [ { operation_name => 'pre' }, { operation_name => 'post' } ],
+    [ { operation_name => 'main::pre' }, { operation_name => 'main::post' } ],
     'subs defined before and after "use OpenTracing::WrapScope"'
 );

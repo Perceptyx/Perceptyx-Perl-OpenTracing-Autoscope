@@ -52,7 +52,7 @@ sub wrapped {
         my $call_sub = (caller(1))[3];
         my $tracer = OpenTracing::GlobalTracer->get_global_tracer; 
         my $scope = $tracer->start_active_span(
-            $info->{name},
+            "$info->{package}::$info->{name}",
             tags => {
                 'source.subname' => $info->{name},
                 'source.file'    => $info->{file},

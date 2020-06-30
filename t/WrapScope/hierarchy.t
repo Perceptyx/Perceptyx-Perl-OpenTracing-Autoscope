@@ -33,25 +33,25 @@ root();
 
 global_tracer_is_tree([
     {
-        operation_name => 'root',
+        operation_name => 'main::root',
         children       => [
             {
-                operation_name => 'l1_a',
-                children       => [ { operation_name => 'l2_a' } ]
+                operation_name => 'main::l1_a',
+                children       => [ { operation_name => 'main::l2_a' } ]
             },
             {
-                operation_name => 'l1_b',
-                children       => [ { operation_name => 'l2_b' } ]
+                operation_name => 'main::l1_b',
+                children       => [ { operation_name => 'main::l2_b' } ]
             },
             {
-                operation_name => 'l1_b',
-                children       => [ { operation_name => 'l2_b' } ]
+                operation_name => 'main::l1_b',
+                children       => [ { operation_name => 'main::l2_b' } ]
             },
             {
-                operation_name => 'l1_c',
+                operation_name => 'main::l1_c',
                 children       => [
-                    { operation_name => 'l2_a' },
-                    { operation_name => 'l2_c' },
+                    { operation_name => 'main::l2_a' },
+                    { operation_name => 'main::l2_c' },
                 ]
             },
         ],

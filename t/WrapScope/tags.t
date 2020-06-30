@@ -42,7 +42,7 @@ Foo::caller2();
 global_tracer_cmp_easy(
     [
         {
-            operation_name => 'test_sub',
+            operation_name => 'main::test_sub',
             tags           => {
                 'caller.file'    => __FILE__,
                 'caller.line'    => recall_line('call1'),
@@ -55,7 +55,7 @@ global_tracer_cmp_easy(
             },
         },
         {
-            operation_name => 'test_sub',
+            operation_name => 'main::test_sub',
             tags           => {
                 'caller.file'    => __FILE__,
                 'caller.line'    => recall_line('call2'),
@@ -77,7 +77,7 @@ test_sub(); remember_line('raw_call');
 global_tracer_cmp_easy(
     [
         {
-            operation_name => 'test_sub',
+            operation_name => 'main::test_sub',
             tags           => {
                 'caller.file'    => __FILE__,
                 'caller.line'    => recall_line('raw_call'),
