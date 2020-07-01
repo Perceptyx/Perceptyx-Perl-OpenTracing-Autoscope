@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use B::Hooks::EndOfScope;
 use OpenTracing::GlobalTracer;
+use PerlX::Maybe;
 use Sub::Info qw/sub_info/;
 
 {  # transparent caller, stolen from Hook::LexWrap
@@ -47,13 +48,21 @@ sub wrapped {
     my $info = sub_info($coderef);
 
     return sub {
+        my ($call_package, $call_filename, $call_line) = caller(0);
+        my $call_sub = (caller(1))[3];
         my $tracer = OpenTracing::GlobalTracer->get_global_tracer; 
         my $scope = $tracer->start_active_span(
-            $info->{name},
+            "$info->{package}::$info->{name}",
             tags => {
-                package => $info->{package},
-                file    => $info->{file},
-                line    => $info->{start_line},
+                'source.subname' => $info->{name},
+                'source.file'    => $info->{file},
+                'source.line'    => $info->{start_line},
+                'source.package' => $info->{package},
+                maybe
+                'caller.subname' => $call_sub,
+                'caller.file'    => $call_filename,
+                'caller.line'    => $call_line,
+                'caller.package' => $call_package,
             },
         );
 

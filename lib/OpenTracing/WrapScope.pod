@@ -39,8 +39,31 @@ Roughly equivalent to:
 import takes subroutine names as arguments, these need to be fully qualified 
 if they are not in the current package. All specified subroutines will have
 spans attached to them. Context and caller frames will be preserved.
-Additionally, if a wrapped subroutine dies, an additional C<error> tag will
-be added to the span.
+
+The following tags will be automatically added to each span:
+
+=over 4
+
+=item caller.file - filename where the subroutine was called
+
+=item caller.line - line number on which the subroutine was called
+
+=item caller.package - the calling package
+
+=item caller.subname - the name of the calling subroutine (won't be added if there is none)
+
+=item source.file - filename where the subroutine is defined
+
+=item source.line - line on which the subroutine is defined
+
+=item source.package - package in which the subroutine is located
+
+=item source.subname - the name of the subroutine
+
+=back
+
+Additionally, if a wrapped subroutine dies, an additional C<error> tag,
+containing the error message (C<$@>) will be added to the span.
 
 
 

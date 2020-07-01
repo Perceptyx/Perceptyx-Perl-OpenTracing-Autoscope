@@ -2,6 +2,7 @@ requires            'B::Hooks::EndOfScope';
 requires            'OpenTracing::GlobalTracer';
 requires            'OpenTracing::Implementation::NoOp';
 requires            'Sub::Info';
+requires            'PerlX::Maybe';
 
 requires            'Scope::Context';
 
