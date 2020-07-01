@@ -2,6 +2,7 @@ package OpenTracing::WrapScope;
 our $VERSION = '0.100.0';
 use strict;
 use warnings;
+use warnings::register;
 use B::Hooks::EndOfScope;
 use OpenTracing::GlobalTracer;
 use PerlX::Maybe;
@@ -31,17 +32,27 @@ sub import {
     my $pkg = caller;
     on_scope_end {
         foreach my $sub (@subs) {
-            $sub = "${pkg}::$sub" if $sub !~ /'|::/;
-            die "Couldn't find sub: $sub" if not defined &$sub;
-
-            no strict 'refs';
-            no warnings 'redefine';
-            *$sub = wrapped(\&$sub);
+            install_wrapped(_qualify_sub($sub, $pkg));
         }
     };
     return;
 }
 
+sub install_wrapped {
+    my ($sub) = @_;
+    $sub = _qualify_sub($sub, scalar caller);
+
+    if (not defined &$sub) {
+        warnings::warn "Couldn't find sub: $sub";
+        return;
+    }
+
+    no strict 'refs';
+    no warnings 'redefine';
+    *$sub = wrapped(\&$sub);
+
+    return;
+}
 
 sub wrapped {
     my ($coderef) = @_;
@@ -84,6 +95,12 @@ sub wrapped {
         return if not defined wantarray;
         return wantarray ? @$result : $result;
     };
+}
+
+sub _qualify_sub {
+    my ($sub, $pkg) = @_;
+    return $sub if $sub =~ /'|::/;
+    return "${pkg}::$sub";
 }
 
 1;
