@@ -1,13 +1,14 @@
 use Test::Most tests => 1;
 use Test::OpenTracing::Integration;
 use OpenTracing::Implementation qw/Test/;
-use OpenTracing::WrapScope qw/Test::WrapScope::External::stuff/;
-use lib 't/lib';
-use Test::WrapScope::External;
+use OpenTracing::WrapScope qw/Sample1::foo/;
+use FindBin;
+use lib "$FindBin::Bin/samples/lib";
+use Samples;
 
-Test::WrapScope::External::stuff();
+Sample1::foo();
 
 global_tracer_cmp_easy(
-    [{ operation_name => 'Test::WrapScope::External::stuff' }],
+    [{ operation_name => 'Sample1::foo' }],
     'sub from a module wrapped correctly'
 );
