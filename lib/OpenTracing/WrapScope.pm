@@ -106,7 +106,8 @@ sub wrapped {
             }
             1;
         };
-        $scope->get_span->add_tag(error => $@) unless $ok;
+        # TODO: message should go to logs but we don't have those yet
+        $scope->get_span->add_tags(error => 1, message => "$@") unless $ok;
         $scope->close();
 
         die $@ unless $ok;
