@@ -129,6 +129,7 @@ sub _load_sub_spec {
 
     my @subs;
     while (<$fh_subs>) {
+        next if /^\s*#/; # comment
         chomp;
         croak "Unqualified subroutine: $_" if !/'|::/;
         push @subs, $_;
