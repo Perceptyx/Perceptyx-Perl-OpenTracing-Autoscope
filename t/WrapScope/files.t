@@ -41,7 +41,7 @@ reset_spans();
 
 my $sample_commented = _make_tmp_file(<<'EOF');
 #main::secret
-main::non_secret
+main::non_secret # this is fine
 EOF
 
 OpenTracing::WrapScope::wrap_from_file($sample_commented->filename);
