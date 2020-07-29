@@ -1,5 +1,5 @@
 package OpenTracing::WrapScope;
-our $VERSION = 'v0.104.0';
+our $VERSION = 'v0.104.1';
 use strict;
 use warnings;
 use warnings::register;
@@ -49,7 +49,7 @@ sub import {
     if ($use_env and $ENV{OPENTRACING_WRAPSCOPE_FILE}) {
         push @files, split ':', $ENV{OPENTRACING_WRAPSCOPE_FILE};
     }
-    push @subs, map { _load_sub_spec($_) } map { glob } @files;
+    push @subs, map { _load_sub_spec($_) } grep { -f } map { glob } @files;
 
     on_scope_end { install_wrapped(uniq @subs) };
 
