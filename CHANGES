@@ -2,6 +2,14 @@ CHANGE LOG
 ==========
 
 
+2020-07-29 - v0.104.1
+---------------------
+
+### Fixed
+  - file globbing in WrapScope and `generate_wrap_config` skips directories
+  - require the latest version of Test::OpenTracing::Integration
+
+
 2020-07-24 - v0.104.0
 ---------------------
 
