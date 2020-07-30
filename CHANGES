@@ -2,6 +2,13 @@ CHANGE LOG
 ==========
 
 
+2020-07-30 - v0.105.0
+---------------------
+
+### Added
+  - WrapScope config files now support comments
+
+
 2020-07-29 - v0.104.1
 ---------------------
 
