@@ -1,5 +1,4 @@
 requires            'B::Hooks::EndOfScope';
-requires            'B::Hooks::OP::Check::StashChange';
 requires            'List::MoreUtils';
 requires            'OpenTracing::GlobalTracer';
 requires            'OpenTracing::Implementation::NoOp';

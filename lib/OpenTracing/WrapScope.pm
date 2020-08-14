@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use warnings::register;
 use B::Hooks::EndOfScope;
-use B::Hooks::OP::Check::StashChange;
 use Carp qw/croak/;
 use List::Util qw/uniq/;
 use OpenTracing::GlobalTracer;
@@ -30,9 +29,6 @@ no warnings 'redefine';
 };
 }
 
-my @sub_sets;    # leftover non-wrapped subs
-END { _warn_unwrapped(@sub_sets) }
-
 sub import {
     shift;    # __PACKAGE__
     my $target_package = caller;
@@ -53,56 +49,10 @@ sub import {
     if ($use_env and $ENV{OPENTRACING_WRAPSCOPE_FILE}) {
         push @files, split ':', $ENV{OPENTRACING_WRAPSCOPE_FILE};
     }
-    push @subs, map { _load_sub_spec($_) } grep { -f } map { glob } uniq @files;
+    push @subs, map { _load_sub_spec($_) } grep { -f } map { glob } @files;
 
-    _setup_install_hooks(@subs);
-    return;
-}
+    on_scope_end { install_wrapped(uniq @subs) };
 
-sub _setup_install_hooks {
-    my %stashes;
-    foreach my $sub (@_) {
-        my ($stash) = $sub =~ s/(?:'|::)\w+\z//r;
-        $stashes{$stash}{$sub} = 1;
-    }
-    push @sub_sets, \%stashes;
-
-    on_scope_end {
-        foreach my $stash (keys %stashes) {
-            _install_from_stash($stashes{$stash});
-            delete $stashes{$stash} if not %{ $stashes{$stash} };
-        }
-    };
-
-    my $id;
-    my $installer = sub {    # run when a new package is being compiled
-        my ($new_stash) = @_;
-        return if not exists $stashes{$new_stash};
-
-        on_scope_end {       # check for wanted subs when it's done compiling
-            my $stash = $stashes{$new_stash}
-                or return;    # might have been removed by another hook
-            _install_from_stash($stash);
-            delete $stashes{$new_stash} if not %$stash;
-        };
-
-        # everything is installed, stop checking
-        B::Hooks::OP::Check::StashChange::unregister($id) if not %stashes;
-    };
-    $id = B::Hooks::OP::Check::StashChange::register($installer);
-
-    return;
-}
-
-sub _install_from_stash {
-    my ($stash) = @_;
-    return if not $stash;
-    
-    foreach my $sub (keys %$stash) {
-        next unless defined &$sub;
-        install_wrapped($sub);
-        delete $stash->{$sub};
-    }
     return;
 }
 
@@ -194,15 +144,6 @@ sub wrap_from_file {
     my ($filename) = @_;
     install_wrapped( _load_sub_spec($filename) );
     return;
-}
-
-sub _warn_unwrapped {
-    foreach my $stash_set (@_) {
-        next if not %$stash_set;
-        foreach my $sub (map { keys %$_ } values %$stash_set) {
-            warnings::warn "OpenTracing::WrapScope didn't find sub: $sub";
-        }
-    }
 }
 
 
