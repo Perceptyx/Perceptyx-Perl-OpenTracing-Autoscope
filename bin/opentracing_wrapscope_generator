@@ -36,11 +36,11 @@ sub run {
 
     my %args;
     %args = %{ YAML::XS::LoadFile($spec_file) } if defined $spec_file;
-    push @{ $args{files} },   @files;
+    push @{ $args{files} },   (@files,   @{ $args{file}   // [] });
+    push @{ $args{filters} }, (@filters, @{ $args{filter} // [] });
     push @{ $args{ignore} },  @ignore;
     push @{ $args{include} }, @include;
     push @{ $args{exclude} }, @exclude;
-    push @{ $args{filters} }, @filters;
 
     my @subs = OpenTracing::WrapScope::ConfigGenerator::examine_files(%args);
 
