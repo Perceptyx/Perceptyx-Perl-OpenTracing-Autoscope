@@ -18,6 +18,7 @@ before_script:
        libtap-formatter-junit-perl
        libtest-mockmodule-perl
        libtest-most-perl
+       libmoose-perl
        make
        unzip
     -y
