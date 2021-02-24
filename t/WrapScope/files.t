@@ -1,5 +1,5 @@
 use File::Temp;
-use Test::Most tests => 4;
+use Test::Most tests => 6;
 use Test::OpenTracing::Integration;
 use OpenTracing::Implementation qw/Test/;
 
@@ -52,6 +52,22 @@ non_secret();
 global_tracer_cmp_deeply([
     superhashof({ operation_name => 'main::non_secret' }),
 ], 'commented sub is not touched');
+
+
+my $sample_empty = _make_tmp_file('');
+lives_ok {
+    OpenTracing::WrapScope::wrap_from_file($sample_empty->filename)
+} 'reading an empty file works';
+
+my $sample_empty_lines = _make_tmp_file(<<'EOF');
+
+# test
+
+EOF
+
+lives_ok {
+    OpenTracing::WrapScope::wrap_from_file($sample_empty_lines->filename)
+} 'reading a file with empty lines';
 
 sub _make_tmp_file {
     my ($content) = @_;

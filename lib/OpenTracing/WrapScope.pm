@@ -161,9 +161,10 @@ sub _load_sub_spec {
 
     my @subs;
     while (<$fh_subs>) {
-        next if /^\s*#/;    # commented-out line
-        s/\s*#.*\Z//;       # trailing comment
         chomp;
+        s/\s*#.*\Z//;    # remove comments
+        next unless $_;
+
         croak "Unqualified subroutine: $_" if !/'|::/;
         push @subs, $_;
     }
