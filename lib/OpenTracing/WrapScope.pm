@@ -1,5 +1,5 @@
 package OpenTracing::WrapScope;
-our $VERSION = 'v0.107.0';
+our $VERSION = 'v0.107.1';
 use strict;
 use warnings;
 use warnings::register;
