@@ -29,7 +29,9 @@ sub start_guarded_span {
     # use a closure, so we can carry over $scope until the end of the scope
     # where this coderef will be 'reaped'
     #
-    Scope::Context->up->reap( sub { $scope->close unless $scope->closed } );
+    Scope::Context->up->reap(sub {
+        $scope->close unless $scope->can('closed') and $scope->closed
+    });
     
     return
 }
