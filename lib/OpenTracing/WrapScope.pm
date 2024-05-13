@@ -156,12 +156,16 @@ sub wrapped {
             }
             1;
         };
+        my $err = $@;
         # TODO: message should go to logs but we don't have those yet
-        $scope->get_span->add_tags(error => 1, message => "$@") unless $ok;
+        $scope->get_span->add_tags(error => 1, message => "$err")
+            if not $ok;
         $scope->close();
 
-        die $@ unless $ok;
-        return if not defined wantarray;
+        die $err
+            if not $ok;
+        return
+            unless defined wantarray;
         return wantarray ? @$result : $result;
     };
 }
